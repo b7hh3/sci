@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المركز العلمي - مدرسة عبدالله الاحمد الصباح</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+body {
+    font-family: 'Cairo', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #007bff, #ffff00);
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.container {
+    max-width: 1200px;
+    margin: 0 auto; 
+    padding: 20px;
+    flex: 1;
+}
+header {
+    text-align: center;
+    padding: 80px 20px;
+    position: relative;
+    overflow: hidden;
+    background: url('https://via.placeholder.com/1200x600?text=المركز+العلمي') no-repeat center/cover;
+    color: #fff;
+}
+header::before {
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,123,255,0.5);
+    z-index:1;
+}
+header > * {position: relative; z-index:2;}
+h1 {font-size:3em; text-shadow: 2px 2px 5px rgba(0,0,0,0.6);}
+.description {
+    background: rgba(255,255,255,0.95);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width:800px;
+    font-size: 1.2em;
+    line-height:1.5;
+    border: 2px dashed #007bff;
+    color: black; /* تعديل اللون */
+}
+.start-btn {
+    background: linear-gradient(45deg,#ffff00,#ffcc00);
+    color:#007bff;
+    border:none;
+    padding:15px 35px;
+    font-size:1.5em;
+    border-radius:50px;
+    cursor:pointer;
+    margin-top:20px;
+}
+.projects {
+    display: none;
+    gap:20px;
+    margin-top:40px;
+}
+.project-box {
+    background: rgba(255,255,255,0.95);
+    border-radius: 10px;
+    overflow:hidden;
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+.project-img {width:100%; height:180px; object-fit:cover;}
+.project-title {padding:10px; font-size:1.3em; font-weight:bold; color:#007bff; text-align:center;}
+.detail-btn {
+    background:#007bff;
+    color:#fff;
+    border:none;
+    padding:8px 20px;
+    margin-bottom:10px;
+    cursor:pointer;
+    border-radius:25px;
+}
+.detail-btn:hover {background:#0056b3;}
+footer {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color:#fff;
+    text-align:center;
+    padding:15px;
+    margin-top:auto;
+}
+footer a {color:#ffff00; text-decoration:none;}
+footer a:hover {color:#ffcc00;}
+
+/* الشبكة للكمبيوتر */
+@media(min-width:769px){
+    .projects {display:grid; grid-template-columns: repeat(3,1fr);}
+}
+
+/* الجوال */
+@media(max-width:768px){
+    .projects {display:block;}
+    .project-box {margin-bottom:15px;}
+    .pagination {text-align:center; margin:20px;}
+    .pagination button {padding:10px 15px; margin:0 5px; border:none; border-radius:5px; cursor:pointer; background:#007bff; color:#fff;}
+    .pagination button:hover {background:#0056b3;}
+}
+
+/* نافذة منبثقة */
+.modal {
+    display:none;
+    position:fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.7);
+    justify-content:center;
+    align-items:center;
+    z-index:100;
+}
+.modal-content {
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    max-width:500px;
+    width:90%;
+    position:relative;
+    text-align:right;
+}
+.close-btn {
+    position:absolute;
+    top:10px; left:10px;
+    background:#ff3333;
+    color:#fff;
+    border:none;
+    border-radius:50%;
+    width:30px;
+    height:30px;
+    font-size:18px;
+    cursor:pointer;
+}
+.close-btn:hover {background:#cc0000;}
+.modal-content h2 {color:#007bff; margin-top:0;}
+.modal-content p {margin:10px 0;}
+
+/* أنيميشن */
+.fade-out {opacity:0; transition: opacity 1s ease;}
+.fade-in {opacity:0; animation: fadeIn 1s forwards;}
+@keyframes fadeIn {from {opacity:0;} to {opacity:1;}}
+</style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>المركز العلمي</h1>
+        <div class="description" id="header-desc">
+            هذا هو شرح للمركز العلمي في مدرستنا. يمكنك تعديل هذا النص مباشرة هنا. المركز يركز على تعزيز الابتكار والتجارب العلمية بين الطلاب، مع التركيز على الاختراعات والتكنولوجيا الحديثة.
+        </div>
+        <button class="start-btn" id="startBtn" onclick="start()">ابدأ</button>
+    </header>
+
+    <div class="projects" id="projects"></div>
+    <div class="pagination" id="pagination"></div>
+</div>
+
+<!-- نافذة التفاصيل -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal()">✖</button>
+        <h2 id="modal-title"></h2>
+        <p><strong>الوصف:</strong> <span id="modal-desc"></span></p>
+        <p><strong>القائم عليه:</strong> <span id="modal-author"></span></p>
+        <p><strong>الترتيب:</strong> <span id="modal-order"></span></p>
+    </div>
+</div>
+
+<footer>
+    <p><i class="fas fa-user"></i> مصمم الموقع: شافي السبيعي - 11 ع 2</p>
+    <p><i class="fab fa-instagram"></i> تابعونا على إنستغرام: <a href="https://instagram.com/aaaschoolkw" target="_blank">@aaaschoolkw</a></p>
+</footer>
+
+<script>
+// بيانات المشاريع
+const projects = [
+    {title:"مثال1", image:"https://via.placeholder.com/350x220?text=الطاقة+الشمسية", description:"مثال", author:"أحمد، فاطمة، محمد", order:1},
+    {title:"مثال2", image:"https://via.placeholder.com/350x220?text=الروبوتات", description:" مثال  ", author:"سارة، علي، لينا", order:2},
+    {title:"مثال3", image:"https://via.placeholder.com/350x220?text=الكيمياء", description:"- ", author:"هند، ماجد، ريم", order:3},
+    {title:"مثال4", image:"https://via.placeholder.com/350x220?text=الفيزياء", description:" مثال  ", author:"خالد، نورة، فيصل", order:4},
+];
+
+// Pagination
+let currentPage = 1;
+const itemsPerPageMobile = 5;
+
+function start(){
+    const startBtn = document.getElementById('startBtn');
+    const headerDesc = document.getElementById('header-desc');
+
+    // أنيميشن Fade Out
+    startBtn.classList.add('fade-out');
+    headerDesc.classList.add('fade-out');
+
+    setTimeout(()=>{
+        startBtn.style.display='none';
+        headerDesc.style.display='none';
+
+        renderProjects();
+
+        const projectsContainer = document.getElementById('projects');
+        projectsContainer.classList.add('fade-in');
+        projectsContainer.style.display='grid'; // للكمبيوتر
+        // عنوان مشاريع المركز العلمي
+        const title = document.createElement('h2');
+        title.textContent = 'مشاريع المركز العلمي';
+        title.style.textAlign = 'center';
+        title.style.color = '#007bff';
+        title.style.margin = '20px 0';
+        projectsContainer.before(title);
+
+    }, 1000);
+}
+
+function renderProjects(){
+    const projectsContainer = document.getElementById('projects');
+    projectsContainer.innerHTML='';
+
+    if(window.innerWidth <=768){ // جوال
+        const startIndex = (currentPage-1)*itemsPerPageMobile;
+        const endIndex = startIndex + itemsPerPageMobile;
+        const pageProjects = projects.slice(startIndex,endIndex);
+        pageProjects.forEach((p,i)=> addProjectBox(projectsContainer, p, startIndex+i));
+        renderPagination();
+    } else { // كمبيوتر
+        projects.forEach((p,i)=> addProjectBox(projectsContainer,p,i));
+    }
+}
+
+function addProjectBox(container, p, index){
+    const box = document.createElement('div');
+    box.className='project-box';
+    box.innerHTML=`
+        <img src="${p.image}" class="project-img" alt="${p.title}">
+        <div class="project-title">${p.title}</div>
+        <button class="detail-btn" onclick="showModal(${index})">تفاصيل</button>
+    `;
+    container.appendChild(box);
+}
+
+// النافذة المنبثقة
+function showModal(index){
+    const modal = document.getElementById('modal');
+    document.getElementById('modal-title').textContent = projects[index].title;
+    document.getElementById('modal-desc').textContent = projects[index].description;
+    document.getElementById('modal-author').textContent = projects[index].author;
+    document.getElementById('modal-order').textContent = projects[index].order;
+    modal.style.display='flex';
+}
+
+function closeModal(){
+    document.getElementById('modal').style.display='none';
+}
+
+// Pagination للجوال
+function renderPagination(){
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML='';
+    const totalPages = Math.ceil(projects.length/itemsPerPageMobile);
+    if(totalPages<=1) return;
+    for(let i=1;i<=totalPages;i++){
+        const btn = document.createElement('button');
+        btn.textContent=i;
+        if(i===currentPage) btn.style.background='#0056b3';
+        btn.onclick=()=>{currentPage=i; renderProjects();};
+        pagination.appendChild(btn);
+    }
+}
+
+window.addEventListener('resize', renderProjects);
+</script>
+</body>
+</html>
